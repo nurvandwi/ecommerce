@@ -15,7 +15,7 @@
                     </a>
                   </li>
                   <li class="quick-view">
-                    <a href="product.html">+ Quick View</a>
+                    <router-link to="/product">+ Quick View</router-link>
                   </li>
                 </ul>
               </div>
@@ -110,17 +110,17 @@
 </template>
 
 <script>
-import carousel from 'vue-owl-carousel'
+import carousel from "vue-owl-carousel";
 export default {
-    name:"WomanShayna",
-    components: {
-        carousel
-    }
+  name: "WomanShayna",
+  components: {
+    carousel
+  }
 };
 </script>
 
 <style>
-    .product-item{
-        margin-right: 20px;
-    }
+.product-item {
+  margin-right: 20px;
+}
 </style>
