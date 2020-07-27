@@ -5,7 +5,7 @@
     <div class="breacrumb-section">
       <div class="container">
         <div class="row">
-          <div class="col-lg-12">
+          <div class="col-lg-12 text-left">
             <div class="breadcrumb-text product-more">
               <router-link to="/">
                 <i class="fa fa-home"></i> Home
@@ -34,31 +34,25 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <tr
+                        v-for="keranjang in keranjangUser"
+                        :key="keranjang.id"
+                      >
                         <td class="cart-pic first-row">
-                          <img src="img/cart-page/product-1.jpg" />
+                          <img class="img-cart" :src="keranjang.photo" />
                         </td>
                         <td class="cart-title first-row text-center">
-                          <h5>Pure Pineapple</h5>
+                          <h5>{{ keranjang.name }}</h5>
                         </td>
-                        <td class="p-price first-row">$60.00</td>
-                        <td class="delete-item">
+                        <td class="p-price first-row">
+                          ${{ keranjang.price }}
+                        </td>
+                        <td
+                          @click="removeItem(keranjangUser.index)"
+                          class="delete-item"
+                        >
                           <a href="#">
-                            <i class="material-icons">close</i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="cart-pic first-row">
-                          <img src="img/cart-page/product-1.jpg" />
-                        </td>
-                        <td class="cart-title first-row text-center">
-                          <h5>Pure Pineapple</h5>
-                        </td>
-                        <td class="p-price first-row">$60.00</td>
-                        <td class="delete-item">
-                          <a href="#">
-                            <i class="material-icons">close</i>
+                            <i class="material-icons">x</i>
                           </a>
                         </td>
                       </tr>
@@ -66,7 +60,7 @@
                   </table>
                 </div>
               </div>
-              <div class="col-lg-8">
+              <div class="col-lg-8 text-left">
                 <h4 class="mb-4">Informasi Pembeli:</h4>
                 <div class="user-checkout">
                   <form>
@@ -102,14 +96,18 @@
                     </div>
                     <div class="form-group">
                       <label for="alamatLengkap">Alamat Lengkap</label>
-                      <textarea class="form-control" id="alamatLengkap" rows="3"></textarea>
+                      <textarea
+                        class="form-control"
+                        id="alamatLengkap"
+                        rows="3"
+                      ></textarea>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-4 text-left">
             <div class="row">
               <div class="col-lg-12">
                 <div class="proceed-checkout">
@@ -120,15 +118,15 @@
                     </li>
                     <li class="subtotal mt-3">
                       Subtotal
-                      <span>$240.00</span>
+                      <span>${{ totalHarga }}</span>
                     </li>
                     <li class="subtotal mt-3">
                       Pajak
-                      <span>10%</span>
+                      <span>10% + ${{ ditambahPajak }}</span>
                     </li>
                     <li class="subtotal mt-3">
                       Total Biaya
-                      <span>$440.00</span>
+                      <span>${{ totalBiaya }}</span>
                     </li>
                     <li class="subtotal mt-3">
                       Bank Transfer
@@ -162,9 +160,47 @@ export default {
   name: "ShoppingCart",
   components: {
     HeaderShayna
+  },
+  data() {
+    return {
+      keranjangUser: []
+    };
+  },
+  methods: {
+    removeItem(index) {
+      this.keranjangUser.splice(index, 1);
+      const parsed = JSON.stringify(this.keranjangUser);
+      localStorage.setItem("keranjangUser", parsed);
+    }
+  },
+  mounted() {
+    if (localStorage.getItem("keranjangUser")) {
+      try {
+        this.keranjangUser = JSON.parse(localStorage.getItem("keranjangUser"));
+      } catch (e) {
+        localStorage.removeItem("keranjangUser");
+      }
+    }
+  },
+  computed: {
+    totalHarga() {
+      return this.keranjangUser.reduce(function(items, data) {
+        return items + data.price;
+      }, 0);
+    },
+    ditambahPajak() {
+      return (this.totalHarga * 10) / 100;
+    },
+    totalBiaya() {
+      return this.ditambahPajak + this.totalHarga;
+    }
   }
 };
 </script>
 
 <style>
+.img-cart {
+  width: 100px;
+  height: 100px;
+}
 </style>

@@ -31,13 +31,13 @@
                 <div class="product-thumbs" v-if="productDetails.galleries.length > 0">
                   <carousel :nav="false" :dots="false" class="product-thumbs-track ps-slider">
                     <div
-                      v-for="barang in productDetails.galleries"
-                      :key="barang.id"
+                      v-for="ss in productDetails.galleries"
+                      :key="ss.id"
                       class="pt"
-                      @click="changeImage(barang.photo)"
-                      :class="barang.photo == gambar_default ? 'active' : ''"
+                      @click="changeImage(ss.photo)"
+                      :class="ss.photo == gambar_default ? 'active' : ''"
                     >
-                      <img :src="barang.photo" alt />
+                      <img :src="ss.photo" alt />
                     </div>
                   </carousel>
                 </div>
@@ -53,11 +53,13 @@
                     <h4>${{productDetails.price}}</h4>
                   </div>
                   <div class="quantity">
-                    <a
-                      @click="saveKeranjang(productDetails.id)"
-                      href="#"
-                      class="primary-btn pd-cart"
-                    >Add To Cart</a>
+                    <router-link to="/shoppingcart">
+                      <a
+                        @click="saveKeranjang(productDetails.id, productDetails.name, productDetails.price,  productDetails.galleries[0].photo)"
+                        href="#"
+                        class="primary-btn pd-cart"
+                      >Add To Cart</a>
+                    </router-link>
                   </div>
                 </div>
               </div>
@@ -103,8 +105,15 @@ export default {
       // get gambar default dari API
       this.gambar_default = data.galleries[0].photo;
     },
-    saveKeranjang(idProduct) {
-      this.keranjangUser.push(idProduct);
+    saveKeranjang(idProduct, nameProduct, priceProduct, photoProduct) {
+      var productStored = {
+        id: idProduct,
+        name: nameProduct,
+        price: priceProduct,
+        photo: photoProduct
+      };
+
+      this.keranjangUser.push(productStored);
       const parsed = JSON.stringify(this.keranjangUser);
       localStorage.setItem("keranjangUser", parsed);
     }
